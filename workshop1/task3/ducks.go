@@ -64,11 +64,6 @@ func PeepQuackBehavior() string {
 	return "Peee!"
 }
 
-func playWithDuck(duck IDuck) {
-	direction := "north"
-	fmt.Println("Sent " + duck.Name() + " flying " + duck.Fly(direction) + " and duck says " + duck.Quack())
-}
-
 type RubberDuck struct {
 	Duck
 }
@@ -79,6 +74,23 @@ type MallardDuck struct {
 
 type RedHeadDuck struct {
 	Duck
+}
+
+func getDuckName(duck IDuck) string {
+	switch duck.(type) {
+	case *RubberDuck:
+		return "Rubber duck"
+	case *MallardDuck:
+		return "Mallard duck"
+	case *RedHeadDuck:
+		return "Read head duck"
+	}
+	return ""
+}
+
+func playWithDuck(duck IDuck) {
+	direction := "north"
+	fmt.Println("Sent " + getDuckName(duck) + " flying " + duck.Fly(direction) + " and duck says " + duck.Quack())
 }
 
 func NewRubberDuck() *RubberDuck {
