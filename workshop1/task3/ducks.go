@@ -1,6 +1,8 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type QuackBehavior func() string
 
@@ -34,31 +36,31 @@ func (duck *Duck) Quack() string {
 
 type NoFlyBehavior struct{}
 
-func (beh NoFlyBehavior) fly(direction string) string {
+func (b NoFlyBehavior) fly(direction string) string {
 	return "nowhere"
 }
 
 type CommonFlyBehavior struct{}
 
-func (beh CommonFlyBehavior) fly(direction string) string {
+func (b CommonFlyBehavior) fly(direction string) string {
 	return "to " + direction
 }
 
 type FastFlyBehavior struct{}
 
-func (beh FastFlyBehavior) fly(direction string) string {
+func (b FastFlyBehavior) fly(direction string) string {
 	return "fast to " + direction
 }
 
-func RedHeadDuckQuackBehavior() string {
+func SimpleQuackBehavior() string {
 	return "Qaaaack!"
 }
 
-func MallockDuckQuackBehavior() string {
+func LongQuackBehavior() string {
 	return "Q--aaa-ck!"
 }
 
-func RubberDuckQuackBehavior() string {
+func PeepQuackBehavior() string {
 	return "Peee!"
 }
 
@@ -67,11 +69,38 @@ func playWithDuck(duck IDuck) {
 	fmt.Println("Sent " + duck.Name() + " flying " + duck.Fly(direction) + " and duck says " + duck.Quack())
 }
 
+type RubberDuck struct {
+	Duck
+}
+
+type MallardDuck struct {
+	Duck
+}
+
+type RedHeadDuck struct {
+	Duck
+}
+
+func NewRubberDuck() *RubberDuck {
+	return &RubberDuck{Duck{"Rubber duck", NoFlyBehavior{}, PeepQuackBehavior}}
+}
+
+func NewMallardDuck() *MallardDuck {
+	var duck MallardDuck
+	duck.fly = FastFlyBehavior{}
+	duck.quack = LongQuackBehavior
+	return &duck
+}
+
+func NewRedHeadDuck() *RedHeadDuck {
+	var duck RedHeadDuck
+	duck.fly = CommonFlyBehavior{}
+	duck.quack = SimpleQuackBehavior
+	return &duck
+}
+
 func main() {
-	rubberDuck := Duck{"Rubber Duck", NoFlyBehavior{}, RubberDuckQuackBehavior}
-	redHeadDuck := Duck{"ReadHead Duck", CommonFlyBehavior{}, RedHeadDuckQuackBehavior}
-	mallockDuck := Duck{"Mallock Duck", FastFlyBehavior{}, MallockDuckQuackBehavior}
-	playWithDuck(&rubberDuck)
-	playWithDuck(&redHeadDuck)
-	playWithDuck(&mallockDuck)
+	playWithDuck(NewRedHeadDuck())
+	playWithDuck(NewMallardDuck())
+	playWithDuck(NewRubberDuck())
 }
