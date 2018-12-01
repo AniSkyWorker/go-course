@@ -18,3 +18,11 @@ func TestFizzBuzz(t *testing.T) {
 		}
 	}
 }
+
+func BenchmarkFizzBuzz(b *testing.B) {
+	FizzBuzz(b.N)
+}
+
+func BenchmarkFizzBuzzBuffer(b *testing.B) {
+	FizzBuzzBuffer(b.N)
+}
