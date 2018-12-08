@@ -1,10 +1,9 @@
 package main
 
-import log "github.com/sirupsen/logrus"
-
 import (
 	"fmt"
 	"github.com/aniskyworker/go-course/workshop2/simplevideoserver/handlers"
+	log "github.com/sirupsen/logrus"
 	"net/http"
 	"os"
 )

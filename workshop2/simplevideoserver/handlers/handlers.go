@@ -1,9 +1,8 @@
 package handlers
 
-import log "github.com/sirupsen/logrus"
-
 import (
 	"github.com/gorilla/mux"
+	log "github.com/sirupsen/logrus"
 	"net/http"
 )
 
