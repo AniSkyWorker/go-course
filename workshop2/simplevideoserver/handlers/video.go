@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"github.com/gorilla/mux"
 	log "github.com/sirupsen/logrus"
 	"io"
 	"net/http"
@@ -15,22 +16,25 @@ type Video struct {
 	Url       string `json:"url"`
 }
 
-func getVideo(w http.ResponseWriter, _ *http.Request) {
-	video := Video{"d290f1ee-6c54-4b01-90e6-d701748f0851",
-		"Black Retrospective Woman",
-		15,
-		"/content/d290f1ee-6c54-4b01-90e6-d701748f0851/screen.jpg",
-		"/content/d290f1ee-6c54-4b01-90e6-d701748f0851/index.mp4"}
+func getVideo(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id := vars["ID"]
 
-	b, err := json.Marshal(video)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+	video := getVideoById(id)
+	if video == nil {
+		log.Error("can`t find video by " + id)
+	} else {
+		b, err := json.Marshal(video)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+		w.WriteHeader(http.StatusOK)
+		if _, err = io.WriteString(w, string(b)); err != nil {
+			log.WithField("err", err).Error("write response error")
+		}
 	}
 
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.WriteHeader(http.StatusOK)
-	if _, err = io.WriteString(w, string(b)); err != nil {
-		log.WithField("err", err).Error("write response error")
-	}
 }
