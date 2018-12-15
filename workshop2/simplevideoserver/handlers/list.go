@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-func getVideoList(db *database.Database, w http.ResponseWriter, _ *http.Request) {
+func getVideoList(db database.Database, w http.ResponseWriter, _ *http.Request) {
 	videos, err := db.GetVideos()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

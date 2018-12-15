@@ -7,13 +7,13 @@ import (
 	"net/http"
 )
 
-func WrapHandlerWithDb(db *database.Database, f func(db *database.Database, w http.ResponseWriter, r *http.Request)) http.HandlerFunc {
+func WrapHandlerWithDb(db database.Database, f func(db database.Database, w http.ResponseWriter, r *http.Request)) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		f(db, w, r)
 	}
 }
 
-func Router(db *database.Database) http.Handler {
+func Router(db database.Database) http.Handler {
 	r := mux.NewRouter()
 	s := r.PathPrefix("/api/v1").Subrouter()
 

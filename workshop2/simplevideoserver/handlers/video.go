@@ -9,7 +9,7 @@ import (
 	"net/http"
 )
 
-func getVideo(db *database.Database, w http.ResponseWriter, r *http.Request) {
+func getVideo(db database.Database, w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["ID"]
 

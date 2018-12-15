@@ -19,14 +19,14 @@ func main() {
 		defer file.Close()
 	}
 
-	var db database.Database
-	db.Connect()
-	defer db.Close()
+	var conn database.Connector
+	conn.Connect()
+	defer conn.Close()
 
 	serverUrl := ":8000"
 	log.WithFields(log.Fields{"url": serverUrl}).Info("starting the server")
 	killSignalChan := getKillSignalChan()
-	srv := startServer(serverUrl, &db)
+	srv := startServer(serverUrl, &conn)
 
 	waitForKillSignal(killSignalChan)
 	err = srv.Shutdown(context.Background())
@@ -36,8 +36,8 @@ func main() {
 	}
 }
 
-func startServer(serverUrl string, db *database.Database) *http.Server {
-	router := handlers.Router(db)
+func startServer(serverUrl string, conn *database.Connector) *http.Server {
+	router := handlers.Router(conn)
 	srv := &http.Server{Addr: serverUrl, Handler: router}
 	go func() {
 		log.Fatal(srv.ListenAndServe())

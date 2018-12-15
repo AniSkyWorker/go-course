@@ -12,7 +12,7 @@ import (
 const dirPath = "workshop2/simplevideoserver"
 const urlRoot = "/content"
 
-func uploadVideo(db *database.Database, w http.ResponseWriter, r *http.Request) {
+func uploadVideo(db database.Database, w http.ResponseWriter, r *http.Request) {
 	fileReader, header, err := r.FormFile("file[]")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

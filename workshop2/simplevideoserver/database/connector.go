@@ -6,11 +6,11 @@ import (
 	"log"
 )
 
-type Database struct {
+type Connector struct {
 	db *sql.DB
 }
 
-func (db *Database) GetVideos() ([]Video, error) {
+func (db *Connector) GetVideos() ([]Video, error) {
 	var videos []Video
 	rows, err := db.db.Query(`SELECT video_key, title, duration, url, thumbnail_url FROM video`)
 	if err != nil {
@@ -29,20 +29,20 @@ func (db *Database) GetVideos() ([]Video, error) {
 	return videos, nil
 }
 
-func (db *Database) AddVideo(video *Video) error {
+func (db *Connector) AddVideo(video *Video) error {
 	q := `INSERT INTO video SET video_key = ?, title = ?, duration = ?, url = ?, thumbnail_url = ?`
 	_, err := db.db.Exec(q, video.Id, video.Name, video.Duration, video.Url, video.Thumbnail)
 	return err
 }
 
-func (db *Database) GetVideo(id string) (Video, error) {
+func (db *Connector) GetVideo(id string) (Video, error) {
 	var video Video
 	err := db.db.QueryRow("SELECT video_key, title, duration, url, thumbnail_url FROM video WHERE video_key = ?", id).Scan(
 		&video.Id, &video.Name, &video.Duration, &video.Url, &video.Thumbnail)
 	return video, err
 }
 
-func (db *Database) Connect() {
+func (db *Connector) Connect() {
 	conn, err := sql.Open("mysql", "root:video1234@/videoservice")
 	if err != nil {
 		log.Fatal(err)
@@ -55,6 +55,6 @@ func (db *Database) Connect() {
 
 }
 
-func (db *Database) Close() {
+func (db *Connector) Close() {
 	db.Close()
 }
