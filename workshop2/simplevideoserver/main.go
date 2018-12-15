@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"github.com/aniskyworker/go-course/workshop2/simplevideoserver/database"
 	"github.com/aniskyworker/go-course/workshop2/simplevideoserver/handlers"
 	log "github.com/sirupsen/logrus"
 	"net/http"
@@ -18,17 +19,25 @@ func main() {
 		defer file.Close()
 	}
 
+	var db database.Database
+	db.Connect()
+	defer db.Close()
+
 	serverUrl := ":8000"
 	log.WithFields(log.Fields{"url": serverUrl}).Info("starting the server")
 	killSignalChan := getKillSignalChan()
-	srv := startServer(serverUrl)
+	srv := startServer(serverUrl, &db)
 
 	waitForKillSignal(killSignalChan)
-	srv.Shutdown(context.Background())
+	err = srv.Shutdown(context.Background())
+	if err != nil {
+		log.Fatal("Failed to shutdown server")
+		return
+	}
 }
 
-func startServer(serverUrl string) *http.Server {
-	router := handlers.Router()
+func startServer(serverUrl string, db *database.Database) *http.Server {
+	router := handlers.Router(db)
 	srv := &http.Server{Addr: serverUrl, Handler: router}
 	go func() {
 		log.Fatal(srv.ListenAndServe())

@@ -1,18 +1,25 @@
 package handlers
 
 import (
+	"github.com/aniskyworker/go-course/workshop2/simplevideoserver/database"
 	"github.com/gorilla/mux"
 	log "github.com/sirupsen/logrus"
 	"net/http"
 )
 
-func Router() http.Handler {
+func WrapHandlerWithDb(db *database.Database, f func(db *database.Database, w http.ResponseWriter, r *http.Request)) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		f(db, w, r)
+	}
+}
+
+func Router(db *database.Database) http.Handler {
 	r := mux.NewRouter()
 	s := r.PathPrefix("/api/v1").Subrouter()
 
-	s.HandleFunc("/list", getVideoList).Methods(http.MethodGet)
-	s.HandleFunc("/video/{ID}", getVideo).Methods(http.MethodGet)
-	s.HandleFunc("/video", uploadVideo).Methods(http.MethodPost)
+	s.HandleFunc("/list", WrapHandlerWithDb(db, getVideoList)).Methods(http.MethodGet)
+	s.HandleFunc("/video/{ID}", WrapHandlerWithDb(db, getVideo)).Methods(http.MethodGet)
+	s.HandleFunc("/video", WrapHandlerWithDb(db, uploadVideo)).Methods(http.MethodPost)
 
 	return logMiddleware(r)
 }

@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"github.com/aniskyworker/go-course/workshop2/simplevideoserver/database"
 	"github.com/google/uuid"
 	"io"
 	"net/http"
@@ -8,9 +9,10 @@ import (
 	"path/filepath"
 )
 
-const dirPath = "workshop2/simplevideoserver/content"
+const dirPath = "workshop2/simplevideoserver"
+const urlRoot = "/content"
 
-func uploadVideo(w http.ResponseWriter, r *http.Request) {
+func uploadVideo(db *database.Database, w http.ResponseWriter, r *http.Request) {
 	fileReader, header, err := r.FormFile("file[]")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -25,8 +27,8 @@ func uploadVideo(w http.ResponseWriter, r *http.Request) {
 
 	videoId := uuid.New()
 	fileName := header.Filename
-	uniqueFilePath := filepath.Join(dirPath, videoId.String())
-	file, err := createFile(uniqueFilePath, fileName)
+	uniqueFilePath := filepath.Join(urlRoot, videoId.String())
+	file, err := createFile(filepath.Join(dirPath, uniqueFilePath), fileName)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
@@ -36,8 +38,12 @@ func uploadVideo(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 
-	videoList = append(videoList,
-		Video{videoId.String(), fileName, 0, "", filepath.Join(uniqueFilePath, fileName)})
+	err = db.AddVideo(&database.Video{videoId.String(), fileName, 0, "",
+		filepath.Join(uniqueFilePath, fileName)})
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }
 
 func createFile(dirPath string, fileName string) (*os.File, error) {
