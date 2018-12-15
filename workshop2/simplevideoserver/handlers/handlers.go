@@ -12,6 +12,8 @@ func Router() http.Handler {
 
 	s.HandleFunc("/list", getVideoList).Methods(http.MethodGet)
 	s.HandleFunc("/video/{ID}", getVideo).Methods(http.MethodGet)
+	s.HandleFunc("/video", uploadVideo).Methods(http.MethodPost)
+
 	return logMiddleware(r)
 }
 
