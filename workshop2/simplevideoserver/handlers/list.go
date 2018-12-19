@@ -15,7 +15,12 @@ func getVideoList(db database.Database, w http.ResponseWriter, _ *http.Request) 
 		return
 	}
 
-	b, err := json.Marshal(videos)
+	var videoContentList []videoContent
+	for _, video := range videos {
+		videoContentList = append(videoContentList, createVideoContent(video))
+	}
+
+	b, err := json.Marshal(videoContentList)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

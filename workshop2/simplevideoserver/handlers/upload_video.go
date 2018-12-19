@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"github.com/aniskyworker/go-course/workshop2/simplevideoserver/database"
+	"github.com/aniskyworker/go-course/workshop2/simplevideoserver/model"
 	"github.com/google/uuid"
 	"io"
 	"net/http"
@@ -38,7 +39,7 @@ func uploadVideo(db database.Database, w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 
-	err = db.AddVideo(&database.Video{videoId.String(), fileName, 0, "",
+	err = db.AddVideo(&model.Video{videoId.String(), fileName, 0, "",
 		filepath.Join(uniqueFilePath, fileName)})
 
 	if err != nil {
