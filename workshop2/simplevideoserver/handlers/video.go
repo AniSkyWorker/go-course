@@ -33,7 +33,6 @@ func getVideo(db database.Database, w http.ResponseWriter, r *http.Request) {
 	}
 
 	videoContent := createVideoContent(video)
-	log.Error("can`t find video by " + id)
 	b, err := json.Marshal(videoContent)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
