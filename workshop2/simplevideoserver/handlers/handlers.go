@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"github.com/aniskyworker/go-course/workshop2/simplevideoserver/database"
+	"github.com/aniskyworker/go-course/workshop2/simplevideoserver/filestorage"
 	"github.com/gorilla/mux"
 	log "github.com/sirupsen/logrus"
 	"net/http"
@@ -13,13 +14,19 @@ func WrapHandlerWithDb(db database.Database, f func(db database.Database, w http
 	}
 }
 
-func Router(db database.Database) http.Handler {
+func WrapHandlerWithVideoStorage(db database.Database, vs filestorage.ContentStorage, f func(db database.Database, cs filestorage.ContentStorage, w http.ResponseWriter, r *http.Request)) http.HandlerFunc {
+	return WrapHandlerWithDb(db, func(db database.Database, w http.ResponseWriter, r *http.Request) {
+		f(db, vs, w, r)
+	})
+}
+
+func Router(db database.Database, vs filestorage.ContentStorage) http.Handler {
 	r := mux.NewRouter()
 	s := r.PathPrefix("/api/v1").Subrouter()
 
 	s.HandleFunc("/list", WrapHandlerWithDb(db, getVideoList)).Methods(http.MethodGet)
 	s.HandleFunc("/video/{ID}", WrapHandlerWithDb(db, getVideo)).Methods(http.MethodGet)
-	s.HandleFunc("/video", WrapHandlerWithDb(db, uploadVideo)).Methods(http.MethodPost)
+	s.HandleFunc("/video", WrapHandlerWithVideoStorage(db, vs, uploadVideo)).Methods(http.MethodPost)
 
 	return logMiddleware(r)
 }

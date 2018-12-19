@@ -2,18 +2,14 @@ package handlers
 
 import (
 	"github.com/aniskyworker/go-course/workshop2/simplevideoserver/database"
+	"github.com/aniskyworker/go-course/workshop2/simplevideoserver/filestorage"
 	"github.com/aniskyworker/go-course/workshop2/simplevideoserver/model"
 	"github.com/google/uuid"
-	"io"
 	"net/http"
-	"os"
 	"path/filepath"
 )
 
-const dirPath = "workshop2/simplevideoserver"
-const urlRoot = "/content"
-
-func uploadVideo(db database.Database, w http.ResponseWriter, r *http.Request) {
+func uploadVideo(db database.Database, cs filestorage.ContentStorage, w http.ResponseWriter, r *http.Request) {
 	fileReader, header, err := r.FormFile("file[]")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -28,13 +24,8 @@ func uploadVideo(db database.Database, w http.ResponseWriter, r *http.Request) {
 
 	videoId := uuid.New()
 	fileName := header.Filename
-	uniqueFilePath := filepath.Join(urlRoot, videoId.String())
-	file, err := createFile(filepath.Join(dirPath, uniqueFilePath), fileName)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
-	defer file.Close()
-	_, err = io.Copy(file, fileReader)
+
+	uniqueFilePath, err := cs.CreateVideoFile(videoId.String(), fileName, fileReader)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
@@ -45,12 +36,4 @@ func uploadVideo(db database.Database, w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
-}
-
-func createFile(dirPath string, fileName string) (*os.File, error) {
-	if err := os.Mkdir(dirPath, os.ModeDir); err != nil {
-		return nil, err
-	}
-	filePath := filepath.Join(dirPath, fileName)
-	return os.OpenFile(filePath, os.O_CREATE|os.O_WRONLY, os.ModePerm)
 }
