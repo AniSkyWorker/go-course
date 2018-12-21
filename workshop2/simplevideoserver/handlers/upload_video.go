@@ -6,7 +6,6 @@ import (
 	"github.com/aniskyworker/go-course/workshop2/simplevideoserver/model"
 	"github.com/google/uuid"
 	"net/http"
-	"path/filepath"
 )
 
 func uploadVideo(db database.Database, cs filestorage.ContentStorage, w http.ResponseWriter, r *http.Request) {
@@ -31,7 +30,7 @@ func uploadVideo(db database.Database, cs filestorage.ContentStorage, w http.Res
 	}
 
 	err = db.AddVideo(&model.Video{videoId.String(), fileName, 0, "",
-		filepath.Join(uniqueFilePath, fileName)})
+		uniqueFilePath})
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
