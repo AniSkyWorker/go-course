@@ -49,8 +49,8 @@ func (db *Connector) GetVideo(id string) (model.Video, error) {
 	return video, err
 }
 
-func (db *Connector) Connect() {
-	conn, err := sql.Open("mysql", "root:video1234@/videoservice")
+func (db *Connector) Connect(dbName string) {
+	conn, err := sql.Open("mysql", "root:video1234@/"+dbName)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -59,9 +59,10 @@ func (db *Connector) Connect() {
 	if err := db.db.Ping(); err != nil {
 		log.Fatal(err)
 	}
-
 }
 
 func (db *Connector) Close() {
-	db.Close()
+	if err := db.db.Close(); err != nil {
+		log.Fatal(err)
+	}
 }

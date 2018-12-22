@@ -21,7 +21,7 @@ func main() {
 	}
 
 	var conn database.Connector
-	conn.Connect()
+	conn.Connect("videoservice")
 	defer conn.Close()
 
 	var videoStorage filestorage.VideoStorage

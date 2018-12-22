@@ -1,0 +1,84 @@
+package database
+
+import (
+	"github.com/aniskyworker/go-course/workshop2/simplevideoserver/model"
+	"testing"
+)
+
+var videos = []model.Video{
+	{"d290f1ee-6c54-4b01-90e6-d701748f0851",
+		"Black Retrospective Woman",
+		15,
+		"/content/d290f1ee-6c54-4b01-90e6-d701748f0851/screen.jpg",
+		"/content/d290f1ee-6c54-4b01-90e6-d701748f0851/index.mp4"},
+	{"sldjfl34-dfgj-523k-jk34-5jk3j45klj34",
+		"Dancing man",
+		112,
+		"/content/sldjfl34-dfgj-523k-jk34-5jk3j45klj34/screen.jpg",
+		"/content/sldjfl34-dfgj-523k-jk34-5jk3j45klj34/index.mp4"},
+	{"hjkhhjk3-23j4-j45k-erkj-kj3k4jl2k345",
+		"Vintage car",
+		42,
+		"/content/hjkhhjk3-23j4-j45k-erkj-kj3k4jl2k345/screen.jpg",
+		"/content/hjkhhjk3-23j4-j45k-erkj-kj3k4jl2k345/index.mp4"},
+}
+
+func TestConnector(t *testing.T) {
+	var conn Connector
+	conn.Connect("")
+	defer conn.Close()
+
+	dbName := "testdb"
+	oldDb := "videoservice"
+	_, err := conn.db.Exec("CREATE DATABASE " + dbName)
+
+	defer func() {
+		_, err = conn.db.Exec("DROP DATABASE " + dbName)
+		if err != nil {
+			t.Error(err)
+			return
+		}
+	}()
+
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	_, err = conn.db.Exec("USE " + dbName)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	_, err = conn.db.Exec("CREATE TABLE " + dbName + ".video " + "LIKE " + oldDb + ".video")
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	for _, video := range videos {
+		err = conn.AddVideo(&video)
+		if err != nil {
+			t.Error(err)
+			return
+		}
+
+		dbVideo, err := conn.GetVideo(video.Id)
+		if err != nil {
+			t.Error(err)
+			return
+		}
+
+		if dbVideo != video {
+			t.Errorf("Video from db is wrong. Have: %v, want: %v.", dbVideo, video)
+			return
+		}
+	}
+
+	_, err = conn.GetVideos()
+	if err != nil {
+		t.Error(err)
+		return
+	}
+}
