@@ -6,21 +6,21 @@ import (
 )
 
 var videos = []model.Video{
-	{"d290f1ee-6c54-4b01-90e6-d701748f0851",
-		"Black Retrospective Woman",
-		15,
-		"/content/d290f1ee-6c54-4b01-90e6-d701748f0851/screen.jpg",
-		"/content/d290f1ee-6c54-4b01-90e6-d701748f0851/index.mp4"},
-	{"sldjfl34-dfgj-523k-jk34-5jk3j45klj34",
-		"Dancing man",
-		112,
-		"/content/sldjfl34-dfgj-523k-jk34-5jk3j45klj34/screen.jpg",
-		"/content/sldjfl34-dfgj-523k-jk34-5jk3j45klj34/index.mp4"},
-	{"hjkhhjk3-23j4-j45k-erkj-kj3k4jl2k345",
-		"Vintage car",
-		42,
-		"/content/hjkhhjk3-23j4-j45k-erkj-kj3k4jl2k345/screen.jpg",
-		"/content/hjkhhjk3-23j4-j45k-erkj-kj3k4jl2k345/index.mp4"},
+	{Id: "d290f1ee-6c54-4b01-90e6-d701748f0851",
+		Name:      "Black Retrospective Woman",
+		Duration:  15,
+		Thumbnail: "/content/d290f1ee-6c54-4b01-90e6-d701748f0851/screen.jpg",
+		Url:       "/content/d290f1ee-6c54-4b01-90e6-d701748f0851/index.mp4"},
+	{Id: "sldjfl34-dfgj-523k-jk34-5jk3j45klj34",
+		Name:      "Dancing man",
+		Duration:  112,
+		Thumbnail: "/content/sldjfl34-dfgj-523k-jk34-5jk3j45klj34/screen.jpg",
+		Url:       "/content/sldjfl34-dfgj-523k-jk34-5jk3j45klj34/index.mp4"},
+	{Id: "hjkhhjk3-23j4-j45k-erkj-kj3k4jl2k345",
+		Name:      "Vintage car",
+		Duration:  42,
+		Thumbnail: "/content/hjkhhjk3-23j4-j45k-erkj-kj3k4jl2k345/screen.jpg",
+		Url:       "/content/hjkhhjk3-23j4-j45k-erkj-kj3k4jl2k345/index.mp4"},
 }
 
 func TestConnector(t *testing.T) {

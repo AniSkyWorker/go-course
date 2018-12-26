@@ -30,8 +30,8 @@ func uploadVideo(db database.Database, cs filestorage.ContentStorage, w http.Res
 		return
 	}
 
-	err = db.AddVideo(&model.Video{videoId.String(), fileName, 0, "",
-		uniqueFilePath})
+	err = db.AddVideo(&model.Video{Id: videoId.String(), Name: fileName, Duration: 0, Thumbnail: "",
+		Url: uniqueFilePath})
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

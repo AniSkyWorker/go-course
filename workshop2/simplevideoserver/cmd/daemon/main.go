@@ -16,7 +16,7 @@ import (
 func RunTaskProvider(stopChan chan struct{}, db database.Database) <-chan *taskpool.Task {
 	resultChan := make(chan *taskpool.Task)
 	stopTaskProviderChan := make(chan struct{})
-	taskProvider := taskpool.TaskProvider{db}
+	taskProvider := taskpool.TaskProvider{Database: db}
 	taskProviderChan := taskProvider.ProvideTasks(stopTaskProviderChan)
 	onStop := func() {
 		stopTaskProviderChan <- struct{}{}
