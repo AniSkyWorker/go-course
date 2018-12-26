@@ -11,10 +11,30 @@ type Database interface {
 	AddVideo(video *model.Video) error
 	GetVideo(id string) (model.Video, error)
 	GetVideos() ([]model.Video, error)
+	GetVideoByStatus(status model.Status) (model.Video, error)
+	UpdateVideoStatus(id string, status model.Status) error
+	UpdateVideo(id string, thumbnailPath string, duration int) error
 }
 
 type Connector struct {
 	db *sql.DB
+}
+
+func (db *Connector) GetVideoByStatus(status model.Status) (model.Video, error) {
+	var video model.Video
+	err := db.db.QueryRow("SELECT video_key, title, duration, url, thumbnail_url FROM video WHERE status = ?", status).Scan(
+		&video.Id, &video.Name, &video.Duration, &video.Url, &video.Thumbnail)
+	return video, err
+}
+
+func (db *Connector) UpdateVideoStatus(id string, status model.Status) error {
+	_, err := db.db.Query("UPDATE video SET status = ? WHERE video_key = ?", status, id)
+	return err
+}
+
+func (db *Connector) UpdateVideo(id string, thumbnailPath string, duration int) error {
+	_, err := db.db.Query("UPDATE video SET thumbnail_url = ?, duration = ? WHERE video_key = ?", thumbnailPath, duration, id)
+	return err
 }
 
 func (db *Connector) GetVideos() ([]model.Video, error) {
