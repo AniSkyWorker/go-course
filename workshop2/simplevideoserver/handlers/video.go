@@ -11,15 +11,15 @@ import (
 )
 
 type videoContent struct {
-	Id        string `json:"id"`
+	ID        string `json:"id"`
 	Name      string `json:"name"`
 	Duration  int    `json:"duration"`
 	Thumbnail string `json:"thumbnail"`
-	Url       string `json:"url"`
+	URL       string `json:"url"`
 }
 
 func createVideoContent(v model.Video) videoContent {
-	return videoContent{v.Id, v.Name, v.Duration, v.Thumbnail, v.Url}
+	return videoContent{v.ID, v.Name, v.Duration, v.Thumbnail, v.URL}
 }
 
 func getVideo(db database.Database, w http.ResponseWriter, r *http.Request) {

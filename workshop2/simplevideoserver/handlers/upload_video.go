@@ -21,17 +21,17 @@ func uploadVideo(db database.Database, cs filestorage.ContentStorage, w http.Res
 		return
 	}
 
-	videoId := uuid.New()
+	videoID := uuid.New()
 	fileName := header.Filename
 
-	uniqueFilePath, err := cs.CreateVideoFile(videoId.String(), fileName, fileReader)
+	uniqueFilePath, err := cs.CreateVideoFile(videoID.String(), fileName, fileReader)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	err = db.AddVideo(&model.Video{Id: videoId.String(), Name: fileName, Duration: 0, Thumbnail: "",
-		Url: uniqueFilePath})
+	err = db.AddVideo(&model.Video{ID: videoID.String(), Name: fileName, Duration: 0, Thumbnail: "",
+		URL: uniqueFilePath})
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

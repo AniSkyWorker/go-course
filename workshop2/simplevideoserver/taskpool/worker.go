@@ -17,16 +17,17 @@ func logIfErr(err error) {
 	}
 }
 
+// Worker create worker for taskpool
 func Worker(tasksChan <-chan *Task, db database.Database, videoProcessor processor.VideoProcessor, name int) {
 	log.Printf("start worker %v\n", name)
 	for task := range tasksChan {
-		thumbnailUrl := filepath.Join(filestorage.UrlContentRoot, task.video.Id, thumbnailName)
-		thumbnailFullPath := filepath.Join(filestorage.DirPath, thumbnailUrl)
-		videoPath := filepath.Join(filestorage.DirPath, task.video.Url)
+		thumbnailURL := filepath.Join(filestorage.URLContentRoot, task.video.ID, thumbnailName)
+		thumbnailFullPath := filepath.Join(filestorage.DirPath, thumbnailURL)
+		videoPath := filepath.Join(filestorage.DirPath, task.video.URL)
 		err := videoProcessor.CreateVideoThumbnail(videoPath, thumbnailFullPath, 0)
 		if err != nil {
 			log.WithError(err)
-			err = db.UpdateVideoStatus(task.video.Id, model.Error)
+			err = db.UpdateVideoStatus(task.video.ID, model.Error)
 			logIfErr(err)
 			continue
 		}
@@ -34,20 +35,20 @@ func Worker(tasksChan <-chan *Task, db database.Database, videoProcessor process
 		dur, err := videoProcessor.GetVideoDuration(videoPath)
 		if err != nil {
 			log.WithError(err)
-			err = db.UpdateVideoStatus(task.video.Id, model.Error)
+			err = db.UpdateVideoStatus(task.video.ID, model.Error)
 			logIfErr(err)
 			continue
 		}
 
-		err = db.UpdateVideo(task.video.Id, thumbnailUrl, int(dur))
+		err = db.UpdateVideo(task.video.ID, thumbnailURL, int(dur))
 		if err != nil {
 			log.WithError(err)
-			err = db.UpdateVideoStatus(task.video.Id, model.Error)
+			err = db.UpdateVideoStatus(task.video.ID, model.Error)
 			logIfErr(err)
 			continue
 		}
 
-		err = db.UpdateVideoStatus(task.video.Id, model.Ready)
+		err = db.UpdateVideoStatus(task.video.ID, model.Ready)
 		log.WithError(err)
 	}
 }

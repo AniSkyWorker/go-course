@@ -1,13 +1,14 @@
 package model
 
 type Video struct {
-	Id        string
+	ID        string
 	Name      string
 	Duration  int
 	Thumbnail string
-	Url       string
+	URL       string
 }
 
+// Status video status of video in database
 type Status int
 
 const (

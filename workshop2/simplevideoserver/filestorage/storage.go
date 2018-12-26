@@ -6,18 +6,21 @@ import (
 	"path/filepath"
 )
 
+// ContentStorage interface of file storage
 type ContentStorage interface {
 	CreateVideoFile(id string, filename string, content io.Reader) (string, error)
 }
 
 const DirPath = "workshop2/simplevideoserver"
-const UrlContentRoot = "/content"
+const URLContentRoot = "/content"
 
+// VideoStorage video realization of ContentStorage interface
 type VideoStorage struct {
 }
 
+// CreateVideoFile create video by path that was formed from id
 func (vs *VideoStorage) CreateVideoFile(id string, name string, reader io.Reader) (string, error) {
-	uniqueFilePath := filepath.Join(UrlContentRoot, id)
+	uniqueFilePath := filepath.Join(URLContentRoot, id)
 	file, err := createFile(filepath.Join(DirPath, uniqueFilePath), name)
 	if err != nil {
 		return "", err

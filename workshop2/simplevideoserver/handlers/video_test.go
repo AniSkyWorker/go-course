@@ -10,7 +10,7 @@ import (
 	"testing"
 )
 
-func getVideoById(id string) *http.Response {
+func getVideoByID(id string) *http.Response {
 	w := httptest.NewRecorder()
 	r := httptest.NewRequest("", "/api/v1/video/"+id, nil)
 	r = mux.SetURLVars(r, map[string]string{"ID": id})
@@ -22,7 +22,7 @@ func TestVideo(t *testing.T) {
 
 	videoList, _ := simpleDb.GetVideos()
 	for _, video := range videoList {
-		r := getVideoById(video.Id)
+		r := getVideoByID(video.ID)
 
 		if r.StatusCode != http.StatusOK {
 			t.Errorf("Status code is wrong. Have: %d, want: %d.", r.StatusCode, http.StatusOK)
@@ -38,7 +38,7 @@ func TestVideo(t *testing.T) {
 			t.Errorf("Can't parse json response with error %v", err)
 		}
 
-		r = getVideoById("incorrectid")
+		r = getVideoByID("incorrectid")
 		if r.StatusCode != http.StatusInternalServerError {
 			t.Errorf("Status code is wrong. Have: %d, want: %d.", r.StatusCode, http.StatusInternalServerError)
 		}

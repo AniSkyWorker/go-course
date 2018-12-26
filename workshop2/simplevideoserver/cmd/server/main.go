@@ -26,10 +26,10 @@ func main() {
 
 	var videoStorage filestorage.VideoStorage
 
-	serverUrl := ":8000"
-	log.WithFields(log.Fields{"url": serverUrl}).Info("starting the server")
+	serverURL := ":8000"
+	log.WithFields(log.Fields{"url": serverURL}).Info("starting the server")
 	killSignalChan := getKillSignalChan()
-	srv := startServer(serverUrl, &conn, &videoStorage)
+	srv := startServer(serverURL, &conn, &videoStorage)
 
 	waitForKillSignal(killSignalChan)
 	err = srv.Shutdown(context.Background())
@@ -39,9 +39,9 @@ func main() {
 	}
 }
 
-func startServer(serverUrl string, conn *database.Connector, vs *filestorage.VideoStorage) *http.Server {
+func startServer(serverURL string, conn *database.Connector, vs *filestorage.VideoStorage) *http.Server {
 	router := handlers.Router(conn, vs)
-	srv := &http.Server{Addr: serverUrl, Handler: router}
+	srv := &http.Server{Addr: serverURL, Handler: router}
 	go func() {
 		log.Fatal(srv.ListenAndServe())
 	}()

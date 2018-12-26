@@ -12,21 +12,21 @@ import (
 
 var simpleDb = mockDataBase{
 	[]model.Video{
-		{Id: "d290f1ee-6c54-4b01-90e6-d701748f0851",
+		{ID: "d290f1ee-6c54-4b01-90e6-d701748f0851",
 			Name:      "Black Retrospective Woman",
 			Duration:  15,
 			Thumbnail: "/content/d290f1ee-6c54-4b01-90e6-d701748f0851/screen.jpg",
-			Url:       "/content/d290f1ee-6c54-4b01-90e6-d701748f0851/index.mp4"},
-		{Id: "sldjfl34-dfgj-523k-jk34-5jk3j45klj34",
+			URL:       "/content/d290f1ee-6c54-4b01-90e6-d701748f0851/index.mp4"},
+		{ID: "sldjfl34-dfgj-523k-jk34-5jk3j45klj34",
 			Name:      "Dancing man",
 			Duration:  112,
 			Thumbnail: "/content/sldjfl34-dfgj-523k-jk34-5jk3j45klj34/screen.jpg",
-			Url:       "/content/sldjfl34-dfgj-523k-jk34-5jk3j45klj34/index.mp4"},
-		{Id: "hjkhhjk3-23j4-j45k-erkj-kj3k4jl2k345",
+			URL:       "/content/sldjfl34-dfgj-523k-jk34-5jk3j45klj34/index.mp4"},
+		{ID: "hjkhhjk3-23j4-j45k-erkj-kj3k4jl2k345",
 			Name:      "Vintage car",
 			Duration:  42,
 			Thumbnail: "/content/hjkhhjk3-23j4-j45k-erkj-kj3k4jl2k345/screen.jpg",
-			Url:       "/content/hjkhhjk3-23j4-j45k-erkj-kj3k4jl2k345/index.mp4"},
+			URL:       "/content/hjkhhjk3-23j4-j45k-erkj-kj3k4jl2k345/index.mp4"},
 	},
 	nil,
 	nil,
@@ -51,7 +51,7 @@ func (db *mockDataBase) AddVideo(video *model.Video) error {
 
 func (db *mockDataBase) GetVideo(id string) (model.Video, error) {
 	for _, video := range db.videos {
-		if video.Id == id {
+		if video.ID == id {
 			return video, db.getVideoErr
 		}
 	}

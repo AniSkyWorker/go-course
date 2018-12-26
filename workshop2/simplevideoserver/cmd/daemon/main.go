@@ -13,7 +13,7 @@ import (
 	"time"
 )
 
-func RunTaskProvider(stopChan chan struct{}, db database.Database) <-chan *taskpool.Task {
+func runTaskProvider(stopChan chan struct{}, db database.Database) <-chan *taskpool.Task {
 	resultChan := make(chan *taskpool.Task)
 	stopTaskProviderChan := make(chan struct{})
 	taskProvider := taskpool.TaskProvider{Database: db}
@@ -41,9 +41,9 @@ func RunTaskProvider(stopChan chan struct{}, db database.Database) <-chan *taskp
 	return resultChan
 }
 
-func RunWorkerPool(stopChan chan struct{}, db database.Database, vp processor.VideoProcessor) *sync.WaitGroup {
+func runWorkerPool(stopChan chan struct{}, db database.Database, vp processor.VideoProcessor) *sync.WaitGroup {
 	var wg sync.WaitGroup
-	tasksChan := RunTaskProvider(stopChan, db)
+	tasksChan := runTaskProvider(stopChan, db)
 	for i := 0; i < 3; i++ {
 		go func(i int) {
 			wg.Add(1)
@@ -63,7 +63,7 @@ func main() {
 	defer db.Close()
 	var videoProcessor processor.FfmpegVideoProcessor
 	killChan := getKillSignalChan()
-	wg := RunWorkerPool(stopChan, &db, &videoProcessor)
+	wg := runWorkerPool(stopChan, &db, &videoProcessor)
 
 	waitForKillSignal(killChan)
 	stopChan <- struct{}{}

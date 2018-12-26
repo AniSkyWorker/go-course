@@ -13,7 +13,7 @@ func (tp *TaskProvider) GenerateTask() *Task {
 		log.WithError(err)
 		return nil
 	}
-	err = tp.Database.UpdateVideoStatus(video.Id, model.Processing)
+	err = tp.Database.UpdateVideoStatus(video.ID, model.Processing)
 	if err != nil {
 		log.WithError(err)
 		return nil
