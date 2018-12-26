@@ -25,7 +25,7 @@ func (pr *FfmpegVideoProcessor) GetVideoDuration(videoPath string) (float64, err
 }
 
 func (pr *FfmpegVideoProcessor) CreateVideoThumbnail(videoPath string, thumbnailPath string, thumbnailOffset int64) error {
-	return exec.Command(`ffmpeg`, `-i`, videoPath, `-ss`, ffmpegTimeFromSeconds(thumbnailOffset), `-vframes`, `1`, `-y`, thumbnailPath).Run()
+	return exec.Command(`ffmpeg`, `-i`, videoPath, `-ss`, ffmpegTimeFromSeconds(thumbnailOffset), `-vframes`, `1`, thumbnailPath, `-y`).Run()
 }
 
 func ffmpegTimeFromSeconds(seconds int64) string {

@@ -3,18 +3,23 @@ package taskpool
 import (
 	"github.com/aniskyworker/go-course/workshop2/simplevideoserver/database"
 	"github.com/aniskyworker/go-course/workshop2/simplevideoserver/model"
-	"log"
+	log "github.com/sirupsen/logrus"
 	"time"
 )
 
 func (tp *TaskProvider) GenerateTask() *Task {
 	video, err := tp.Database.GetVideoByStatus(model.Created)
 	if err != nil {
+		log.WithError(err)
+		return nil
+	}
+	err = tp.Database.UpdateVideoStatus(video.Id, model.Processing)
+	if err != nil {
+		log.WithError(err)
 		return nil
 	}
 
-	taskVideo := Video{video.Id, video.Url}
-	return &Task{taskVideo}
+	return &Task{video}
 }
 
 type TaskProvider struct {

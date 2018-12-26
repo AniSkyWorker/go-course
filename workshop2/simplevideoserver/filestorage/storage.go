@@ -10,15 +10,15 @@ type ContentStorage interface {
 	CreateVideoFile(id string, filename string, content io.Reader) (string, error)
 }
 
-const dirPath = "workshop2/simplevideoserver"
-const urlRoot = "/content"
+const DirPath = "workshop2/simplevideoserver"
+const UrlContentRoot = "/content"
 
 type VideoStorage struct {
 }
 
 func (vs *VideoStorage) CreateVideoFile(id string, name string, reader io.Reader) (string, error) {
-	uniqueFilePath := filepath.Join(urlRoot, id)
-	file, err := createFile(filepath.Join(dirPath, uniqueFilePath), name)
+	uniqueFilePath := filepath.Join(UrlContentRoot, id)
+	file, err := createFile(filepath.Join(DirPath, uniqueFilePath), name)
 	if err != nil {
 		return "", err
 	}

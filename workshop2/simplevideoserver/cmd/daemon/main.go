@@ -2,8 +2,8 @@ package main
 
 import (
 	"github.com/aniskyworker/go-course/workshop2/simplevideoserver/database"
-	"github.com/aniskyworker/go-course/workshop4/videoprocessservice/processor"
-	"github.com/aniskyworker/go-course/workshop4/videoprocessservice/taskpool"
+	"github.com/aniskyworker/go-course/workshop2/simplevideoserver/processor"
+	"github.com/aniskyworker/go-course/workshop2/simplevideoserver/taskpool"
 	"log"
 	"math/rand"
 	"os"
@@ -41,15 +41,13 @@ func RunTaskProvider(stopChan chan struct{}, db database.Database) <-chan *taskp
 	return resultChan
 }
 
-const contentPath = "workshop2/simplevideoserver/content"
-
 func RunWorkerPool(stopChan chan struct{}, db database.Database, vp processor.VideoProcessor) *sync.WaitGroup {
 	var wg sync.WaitGroup
 	tasksChan := RunTaskProvider(stopChan, db)
 	for i := 0; i < 3; i++ {
 		go func(i int) {
 			wg.Add(1)
-			taskpool.Worker(tasksChan, db, vp, contentPath, i)
+			taskpool.Worker(tasksChan, db, vp, i)
 			wg.Done()
 		}(i)
 	}
