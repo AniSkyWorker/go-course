@@ -73,14 +73,15 @@ func (db *mockDataBase) UpdateVideo(id string, thumbnailPath string, duration in
 	return nil
 }
 
-func getVideos() *http.Response {
+func getVideos(r *http.Request) *http.Response {
 	w := httptest.NewRecorder()
-	getVideoList(&simpleDb, w, nil)
+	getVideoList(&simpleDb, w, r)
 	return w.Result()
 }
 
 func TestList(t *testing.T) {
-	response := getVideos()
+	r := httptest.NewRequest("", "/api/v1/list?limit=6&skip=0", nil)
+	response := getVideos(r)
 	if response.StatusCode != http.StatusOK {
 		t.Errorf("Status code is wrong. Have: %d, want: %d.", response.StatusCode, http.StatusOK)
 	}
@@ -95,8 +96,21 @@ func TestList(t *testing.T) {
 		t.Errorf("Can't parse json response with error %v", err)
 	}
 
+	r = httptest.NewRequest("", "/api/v1/list?limit=6", nil)
+	response = getVideos(r)
+	if response.StatusCode != http.StatusInternalServerError {
+		t.Errorf("Status code is wrong. Have: %d, want: %d.", response.StatusCode, http.StatusInternalServerError)
+	}
+
+	r = httptest.NewRequest("", "/api/v1/list?skip=6", nil)
+	response = getVideos(r)
+	if response.StatusCode != http.StatusInternalServerError {
+		t.Errorf("Status code is wrong. Have: %d, want: %d.", response.StatusCode, http.StatusInternalServerError)
+	}
+
 	simpleDb.getVideosErr = errors.New("can`t get videos")
-	response = getVideos()
+	r = httptest.NewRequest("", "/api/v1/list?limit=6&skip=0", nil)
+	response = getVideos(r)
 	if response.StatusCode != http.StatusInternalServerError {
 		t.Errorf("Status code is wrong. Have: %d, want: %d.", response.StatusCode, http.StatusInternalServerError)
 	}
