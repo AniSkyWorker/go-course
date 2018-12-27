@@ -27,6 +27,7 @@ func Router(db database.Database, vs filestorage.ContentStorage) http.Handler {
 	s.HandleFunc("/list", wrapHandlerWithDb(db, getVideoList)).Methods(http.MethodGet)
 	s.HandleFunc("/video/{ID}", wrapHandlerWithDb(db, getVideo)).Methods(http.MethodGet)
 	s.HandleFunc("/video", wrapHandlerWithVideoStorage(db, vs, uploadVideo)).Methods(http.MethodPost)
+	s.HandleFunc("/video/{ID}/status", wrapHandlerWithDb(db, getVideoStatus)).Methods(http.MethodGet)
 
 	return logMiddleware(r)
 }

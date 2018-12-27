@@ -6,6 +6,7 @@ type Video struct {
 	Duration  int
 	Thumbnail string
 	URL       string
+	Status    Status
 }
 
 // Status video status of video in database

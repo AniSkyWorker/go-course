@@ -73,8 +73,8 @@ func (db *Connector) AddVideo(video *model.Video) error {
 // GetVideo get video from database by id
 func (db *Connector) GetVideo(id string) (model.Video, error) {
 	var video model.Video
-	err := db.db.QueryRow("SELECT video_key, title, duration, url, thumbnail_url FROM video WHERE video_key = ?", id).Scan(
-		&video.ID, &video.Name, &video.Duration, &video.URL, &video.Thumbnail)
+	err := db.db.QueryRow("SELECT video_key, title, duration, url, thumbnail_url, status FROM video WHERE video_key = ?", id).Scan(
+		&video.ID, &video.Name, &video.Duration, &video.URL, &video.Thumbnail, &video.Status)
 	return video, err
 }
 
